@@ -1,7 +1,6 @@
 from datetime import datetime
 import pandas as pd
-from ..constants.constants import ONE, COLUMN_NAME
-
+from lib.constants.constants import ONE, COLUMN_NAME
 
 class Processor:
     """ Класс процессор для обработки данных и
