@@ -1,7 +1,11 @@
 from datetime import datetime
 import pandas as pd
+<<<<<<< HEAD
 from ..constants.constants import ONE, COLUMN_NAME
 
+=======
+from lib.constants.constants import ONE, COLUMN_NAME
+>>>>>>> branch_7
 
 class Processor:
     """ Класс процессор для обработки данных и
