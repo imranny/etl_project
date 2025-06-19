@@ -1,28 +1,42 @@
-from pathlib import Path
+import os
 import pandas as pd
+import psycopg2
+from sqlalchemy import create_engine
 
+class DbClient:
+    def __init__(self):
+        self.db_params = {
+            "dbname": "airflow",
+            "user": "airflow",
+            "password": "airflow",
+            "host": os.getenv("POSTGRES_HOST", "localhost"),
+            "port": "5432"
+        }
+        self.engine = create_engine(
+            f"postgresql+psycopg2://{self.db_params['user']}:{self.db_params['password']}@"
+            f"{self.db_params['host']}:{self.db_params['port']}/{self.db_params['dbname']}"
+        )
 
-class DbClient():
-    def __init__(self, base_path: str = "data"):
-        self.base_path = Path(base_path)
-        self.processed_dir = self.base_path / "processed"
-        self.raw_dir = self.base_path / "raw"
+    def get_data(self, table_name: str) -> pd.DataFrame:
+        try:
+            with self.engine.connect() as conn:
+                return pd.read_sql_table(table_name, conn)
+        except Exception as e:
+            print(f"Ошибка при чтении данных: {str(e)}")
+            return pd.DataFrame()
 
-    def get_data(self, file_output_name: str) -> pd.DataFrame:
-        return pd.read_csv(self.raw_dir / file_output_name)
-
-    def put_data(self, file_input_name: str, data: pd.DataFrame) -> bool:
-        file_path = self.processed_dir / file_input_name
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-
-        if not data.empty:
-            data.to_csv(file_path, index=False)
+    def put_data(self, table_name: str, data: pd.DataFrame) -> bool:
+        if not isinstance(data, pd.DataFrame) or data.empty:
+            return False
+        try:
+            with self.engine.begin() as conn:
+                data.to_sql(
+                    name=table_name,
+                    con=conn,
+                    if_exists='replace',
+                    index=False
+                )
             return True
-        return False
-
-
-
-
-
-
-
+        except Exception as e:
+            print(f"Ошибка при записи данных: {str(e)}")
+            return False

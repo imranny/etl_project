@@ -2,5 +2,5 @@ from lib.workers.worker import Worker
 
 if __name__ == "__main__":
     worker = Worker()
-    worker.run("input.csv")
-print("ok")
+    ok = worker.run("etl_proj", "processed")
+    print("ok" if ok else "not ok")

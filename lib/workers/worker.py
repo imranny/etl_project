@@ -9,11 +9,17 @@ class Worker:
         self.client = DbClient()
         self.processor = Processor()
 
-    def run(self, path: str) -> bool:
+    def run(self, input_table: str, output_table: str) -> bool:
         try:
-            data = self.client.get_data(path)
+            data = self.client.get_data(input_table)
+            print(f"Прочитано данных: {len(data)} строк")
+
             processed_data = self.processor.process(data)
-            return self.client.put_data(path, processed_data)
+            print(f"Обработано данных: {len(processed_data)} строк")
+
+
+            return self.client.put_data(output_table, processed_data)
 
         except Exception as e:
+            print(f"Ошибка: {str(e)}")
             return False
