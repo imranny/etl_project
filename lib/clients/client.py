@@ -2,28 +2,31 @@ import os
 import pandas as pd
 import psycopg2
 from sqlalchemy import create_engine
+from typing import Optional
+from logg import POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT
+
 
 class DbClient:
     def __init__(self):
         self.db_params = {
-            "dbname": "airflow",
-            "user": "airflow",
-            "password": "airflow",
-            "host": os.getenv("POSTGRES_HOST", "localhost"),
-            "port": "5432"
+            "dbname": POSTGRES_DB,
+            "user": POSTGRES_USER,
+            "password": POSTGRES_PASSWORD,
+            "host": POSTGRES_HOST,
+            "port": POSTGRES_PORT
         }
         self.engine = create_engine(
             f"postgresql+psycopg2://{self.db_params['user']}:{self.db_params['password']}@"
             f"{self.db_params['host']}:{self.db_params['port']}/{self.db_params['dbname']}"
         )
 
-    def get_data(self, table_name: str) -> pd.DataFrame:
+    def get_data(self, table_name: str) -> Optional[pd.DataFrame]:
         try:
             with self.engine.connect() as conn:
                 return pd.read_sql_table(table_name, conn)
         except Exception as e:
             print(f"Ошибка при чтении данных: {str(e)}")
-            return pd.DataFrame()
+            return None
 
     def put_data(self, table_name: str, data: pd.DataFrame) -> bool:
         if not isinstance(data, pd.DataFrame) or data.empty:
