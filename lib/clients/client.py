@@ -3,17 +3,18 @@ import pandas as pd
 import psycopg2
 from sqlalchemy import create_engine
 from typing import Optional
-from logg import POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT
+from logg import LoggInfo
 
 
 class DbClient:
     def __init__(self):
+        logg = LoggInfo()
         self.db_params = {
-            "dbname": POSTGRES_DB,
-            "user": POSTGRES_USER,
-            "password": POSTGRES_PASSWORD,
-            "host": POSTGRES_HOST,
-            "port": POSTGRES_PORT
+            "dbname": logg.POSTGRES_DB,
+            "user": logg.POSTGRES_USER,
+            "password": logg.POSTGRES_PASSWORD,
+            "host": logg.POSTGRES_HOST,
+            "port": logg.POSTGRES_PORT
         }
         self.engine = create_engine(
             f"postgresql+psycopg2://{self.db_params['user']}:{self.db_params['password']}@"
