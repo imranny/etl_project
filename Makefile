@@ -18,3 +18,7 @@ clean:
 # Зайти в контейнер
 bash:
 	docker run -it --rm -v etl:/app/data etl_project bash
+
+
+do:
+	poetry run python main.py
