@@ -1,7 +1,10 @@
 # etl_project
 
 скопируйте репозиторий командой :
+```
 git clone https://github.com/imranny/etl_project.git
+git clone https://github.com/imranny/airflow.git 
+```
 
 далее :
 
@@ -37,4 +40,12 @@ make stop
 ```
 docker stop <container_id> && docker rm <container_id>
 ```
+
+4. 
+после клонирования airflow
+
+```
+docker-compose up
+```
+
 
