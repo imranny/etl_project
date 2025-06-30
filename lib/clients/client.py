@@ -8,17 +8,11 @@ from logg import LoggInfo
 
 class DbClient:
     def __init__(self):
-        logg = LoggInfo()
-        self.db_params = {
-            "dbname": logg.POSTGRES_DB,
-            "user": logg.POSTGRES_USER,
-            "password": logg.POSTGRES_PASSWORD,
-            "host": logg.POSTGRES_HOST,
-            "port": logg.POSTGRES_PORT
-        }
+        config = LoggInfo()
+
         self.engine = create_engine(
-            f"postgresql+psycopg2://{self.db_params['user']}:{self.db_params['password']}@"
-            f"{self.db_params['host']}:{self.db_params['port']}/{self.db_params['dbname']}"
+            f"postgresql+psycopg2://{config.POSTGRES_USER}:{config.POSTGRES_PASSWORD}@"
+            f"{config.POSTGRES_HOST}:{config.POSTGRES_PORT}/{config.POSTGRES_DB}"
         )
 
     def get_data(self, table_name: str) -> Optional[pd.DataFrame]:
